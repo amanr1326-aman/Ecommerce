@@ -1,0 +1,87 @@
+{% extends "base/base.html" %}
+{% block main %}
+<div class="container mt-5 mb-5">
+   <div class="card">
+      <div class="row g-0">
+         <div class="col-md-6 border-end">
+            <div class="d-flex flex-column justify-content-center">
+               <div class="main_image">	<img src="/media/{{product.product_images.first.image}}" id="main_product_image" width="350">	</div>
+               <div class="thumbnail_images">
+                  <ul id="thumbnail">
+                     {% for image in product.product_images.all %}
+                     <li><img onclick="changeImage(this)" src="/media/{{image.image}}" width="70"></li>
+                     {% endfor %}
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-6">
+            <div class="p-3 right-side">
+               <div class="d-flex justify-content-between align-items-center">
+                  <h3>{{product.name}}</h3>
+                  <span class="heart"><i class='bx bx-heart'></i></span>
+               </div>
+               <div class="mt-2 pr-3 content">
+                  <p>{{product.description}}</p>
+               </div>
+               <h3>₹
+                  {% if updated_price %}
+                     {{updated_price}}
+                  {% else %}
+                     {{product.price}}
+                  {% endif %}
+               </h3>
+               <div class="ratings d-flex flex-row align-items-center">
+                  <div class="d-flex flex-row">	<i class='bx bxs-star' ></i>	<i class='bx bxs-star' ></i>	<i class='bx bxs-star' ></i>	<i class='bx bxs-star' ></i>	<i class='bx bx-star' ></i>	</div>
+                  <span>441 reviews</span>
+               </div>
+               <form method="post">
+                  {% csrf_token %}
+                  {% if product.size_variants.count %}
+                  <div class="mt-1">
+                     <span class="fw-bold">Color</span>
+                     <div class="colors">
+                        <ul id="marker">
+                           {% for color in product.color_variants.all %}
+   <!--                           <input class="form-check-input" type="radio" name="colorOptions"  value="{{color.size_name}}">-->
+                              <li><input required class="form-check-input"  onchange="get_updated_price('{{selected_size}}','{{color.color_name}}')"  type="radio" name="color"  value="{{color.color_name}}" id="marker-1"  data-toggle="tooltip" data-placement="top" title="{{color.color_name}}" style="background-color:{{color.color_name}}"  {% if selected_color == color.color_name %} checked="" {% endif %}></li>
+                           {% endfor %}
+                        </ul>
+                     </div>
+                  </div>
+                  {% endif %}
+                  {% if product.size_variants.count %}
+                     <div class="mt-1">
+                        <span class="fw-bold">Size</span>
+                        <div class="colors">
+                           {% for size in product.size_variants.all|dictsortreversed:"size_name"  %}
+                              <div class="form-check form-check-inline">
+                                <input required onchange="get_updated_price('{{size.size_name}}','{{selected_color}}')" class="form-check-input" type="radio" name="size"  value="{{size.size_name}}" {% if selected_size == size.size_name %} checked="" {% endif %}>
+                                <label class="form-check-label">{{size.size_name}}</label>
+                              </div>
+                           {% endfor %}
+                        </div>
+                     </div>
+                  {% endif %}
+                  <div class="buttons d-flex flex-row mt-5 gap-3">
+                     <button type="submit" value="1" name="buynow" class="btn btn-outline-dark hidden">Buy Now</button>
+                     <button type="submit" value="1" name="addproduct"  class="btn btn-dark hidden">Add to Basket</button>
+                  </div>
+
+               </form>
+<!--               <div class="search-option">-->
+<!--                  <i class='bx bx-search-alt-2 first-search'></i>-->
+<!--                  <div class="inputs">	<input type="text" name="">	</div>-->
+<!--                  <i class='bx bx-share-alt share'></i>-->
+<!--               </div>-->
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<script>
+   function get_updated_price(size, color){
+      window.location.href = window.location.pathname+'?' +(size ? 'size='+size : '')+(size?(color?'&':''):'')+(color ? 'color='+color:'');
+   }
+</script>
+   {% endblock %}

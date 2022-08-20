@@ -1,0 +1,25 @@
+
+<!--    <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %}" role="alert">-->
+<!--&lt;!&ndash;        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}&ndash;&gt;-->
+<!--        {{ message }}-->
+<!--    </div>-->
+
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        {% if messages %}
+            {% for message in messages %}
+              <div  class="toast text-bg-{% if message.tags %}{{ message.tags }}{% endif %}" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="3000">
+                <div class="toast-header">
+<!--                  <img src="..." class="rounded me-2" alt="...">-->
+                    <span class="badge rounded-pill text-bg-{% if message.tags %}{{ message.tags }}{% endif %}"><i class="fa fa-bell"></i></span>
+                  <strong class="me-auto mx-2">{{message.tags|title}}</strong>
+                  <small>1 secs ago</small>
+                  <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                  {{message}}
+                </div>
+              </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
